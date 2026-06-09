@@ -4,7 +4,7 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://throwtop.github.io',
+	site: 'https://throwtop.dev',
 	base: '/hyprwin-docs',
 	integrations: [
 		starlight({

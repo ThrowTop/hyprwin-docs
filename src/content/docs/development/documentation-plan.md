@@ -15,7 +15,7 @@ Initial documentation priorities:
 Hosting plan:
 
 - repository: `ThrowTop/hyprwin-docs`
-- initial URL: `https://throwtop.github.io/hyprwin-docs/`
+- initial URL: `https://throwtop.dev/hyprwin-docs/`
 - later custom domain option: `https://docs.throwtop.dev/`
 
 If the site moves to a custom subdomain later, update `astro.config.mjs`:

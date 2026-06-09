@@ -50,7 +50,7 @@ Current sections:
 The site is configured for GitHub Pages at:
 
 ```text
-https://throwtop.github.io/hyprwin-docs/
+https://throwtop.dev/hyprwin-docs/
 ```
 
 Deployment runs through `.github/workflows/deploy.yml`.
