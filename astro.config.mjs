@@ -10,6 +10,7 @@ export default defineConfig({
 		starlight({
 			title: 'HyprwinV2 Docs',
 			description: 'Documentation for HyprwinV2 Lua scripting and custom shaders.',
+			favicon: '/hyprwin-docs/favicon.ico',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ThrowTop/hyprwinv2' }],
 			editLink: {
 				baseUrl: 'https://github.com/ThrowTop/hyprwin-docs/edit/main/',
