@@ -1,34 +1,50 @@
 ---
-title: HyprwinV2 Docs
-description: Documentation for HyprwinV2 Lua scripting, custom shaders, and development notes.
+title: HyprWin Documentation
+description: Reference documentation for HyprWin.
 template: splash
 hero:
-  tagline: Lua automation and shader customization for Windows window management.
+  tagline: Configure Windows keyboard and mouse actions with Lua.
   actions:
     - text: Get Started
-      link: /hyprwin-docs/getting-started/overview/
+      link: /hyprwin-docs/getting-started/
       icon: right-arrow
     - text: Lua API
-      link: /hyprwin-docs/lua/api-reference/
+      link: /hyprwin-docs/lua/hw/
       icon: open-book
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Documentation Areas
+HyprWin is a portable Windows tray utility for keyboard-driven and
+mouse-assisted window management. Its behavior is configured in
+`hyprwin.lua`.
 
-<CardGrid stagger>
-	<Card title="Lua scripting" icon="pencil">
-		Reference pages and examples for automating HyprwinV2 with Lua.
-	</Card>
-	<Card title="Custom shaders" icon="setting">
-		The shader ABI, uniforms, and examples for building visual effects.
-	</Card>
-	<Card title="Configuration" icon="setting">
-		How to install, configure, and run HyprwinV2.
-	</Card>
-	<Card title="Development" icon="open-book">
-		Build notes and documentation planning for maintainers.
-	</Card>
+:::note[Independent project]
+HyprWin is not affiliated with, endorsed by, or connected to
+[hyprwin.cloud](https://hyprwin.cloud/) or its developers.
+:::
+
+The documentation is derived from the current HyprWin source code and EmmyLua
+annotations.
+
+## Start here
+
+<CardGrid>
+  <Card title="Install and first run" icon="rocket">
+    Set up the portable runtime folder and create your first binding.
+    [Get started](/hyprwin-docs/getting-started/)
+  </Card>
+  <Card title="Configure HyprWin" icon="setting">
+    Understand reloads, safe mode, logs, and multi-file Lua configurations.
+    [Configuration](/hyprwin-docs/getting-started/configuration/)
+  </Card>
+  <Card title="Lua API" icon="open-book">
+    Browse settings, windows, monitors, input, audio, filesystem, and system
+    APIs. [`hw` API](/hyprwin-docs/lua/hw/)
+  </Card>
+  <Card title="Custom shaders" icon="seti:shaderlab">
+    Build an HLSL pixel shader against the HyprWin overlay ABI.
+    [Shader guide](/hyprwin-docs/shaders/custom/)
+  </Card>
 </CardGrid>

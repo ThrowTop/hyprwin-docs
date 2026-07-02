@@ -1,0 +1,122 @@
+---
+title: Get Started
+description: Install HyprWin and create your first Lua binding.
+---
+
+import { CardGrid, FileTree, LinkCard, Steps } from '@astrojs/starlight/components';
+
+HyprWin is a portable Windows 11 x64 application. Windows 10 may work but is
+untested and unsupported. HyprWin does not require an installer or a fixed
+installation directory.
+
+## Install
+
+Extract the release into a writable folder. The core runtime layout is:
+
+<FileTree>
+
+- HyprWin
+  - **hyprwin.exe** the application
+  - **lua51.dll** the required LuaJIT runtime
+  - **hyprwin.lua** the active configuration
+
+</FileTree>
+
+If `hyprwin.lua` is missing, HyprWin creates it from the embedded default
+configuration during startup.
+
+Release archives may also contain `.luarc.json` and `hw_annotations.lua`.
+These provide Lua Language Server completion and type information and are not
+required at runtime.
+
+## First launch
+
+<Steps>
+
+1. Run `hyprwin.exe`.
+
+   Release builds request administrator privileges and Windows may show a User
+   Account Control prompt.
+
+2. Find HyprWin in the system tray.
+
+   The tray menu provides **Reload Config**, **Open Config Folder**, and
+   **Exit**.
+
+3. Open the configuration folder from the tray menu.
+
+   Only one HyprWin instance can run at a time.
+
+</Steps>
+
+## How the controls work
+
+The configured SUPER key is `LWIN` by default.
+
+- Hold SUPER and press a configured key to run a Lua binding.
+- Hold SUPER and drag with the left mouse button to move a window.
+- Hold SUPER and drag with the right mouse button to resize a window.
+
+## Add a binding
+
+Open `hyprwin.lua` and add:
+
+```lua title="hyprwin.lua"
+hw.bind("RETURN", function()
+  hw.launch("wt.exe")
+end)
+```
+
+Reload the configuration from the tray menu. Holding SUPER and pressing Enter
+now launches Windows Terminal.
+
+Binding strings omit `SUPER`, so `"RETURN"` means SUPER+Enter.
+
+## Generated folders
+
+HyprWin may create these folders beside the executable:
+
+<FileTree>
+
+- HyprWin
+  - logs/ timestamped run logs
+  - shader-cache/ cached custom shader bytecode
+
+</FileTree>
+
+HyprWin retains up to five current log files.
+
+## Next steps
+
+<CardGrid>
+  <LinkCard
+    title="Configuration"
+    href="/hyprwin-docs/getting-started/configuration/"
+    description="Loading, reloading, safe mode, and multi-file configurations."
+  />
+  <LinkCard
+    title="Key bindings"
+    href="/hyprwin-docs/lua/bind/"
+    description="Register and inspect SUPER key combinations."
+  />
+  <LinkCard
+    title="hw"
+    href="/hyprwin-docs/lua/hw/"
+    description="Lifecycle, timers, logging, and application control."
+  />
+  <LinkCard
+    title="Window API"
+    href="/hyprwin-docs/lua/window/"
+    description="Inspect and control native windows."
+  />
+  <LinkCard
+    title="Troubleshooting"
+    href="/hyprwin-docs/getting-started/troubleshooting/"
+    description="Diagnose startup, configuration, binding, and shader problems."
+  />
+  <LinkCard
+    title="Recipes"
+    href="/hyprwin-docs/guides/recipes/"
+    description="Complete configuration patterns built from the documented API."
+  />
+</CardGrid>

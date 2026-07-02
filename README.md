@@ -1,6 +1,6 @@
-# HyprwinV2 Docs
+# HyprWin Docs
 
-Documentation site for HyprwinV2 Lua scripting, custom shaders, and development notes.
+Documentation site for HyprWin configuration, Lua scripting, and custom shaders.
 
 Built with [Astro](https://astro.build/) and [Starlight](https://starlight.astro.build/).
 
@@ -43,7 +43,6 @@ Current sections:
 - `getting-started/`
 - `lua/`
 - `shaders/`
-- `development/`
 
 ## Deployment
 

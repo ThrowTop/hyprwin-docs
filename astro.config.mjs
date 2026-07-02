@@ -8,43 +8,63 @@ export default defineConfig({
 	base: '/hyprwin-docs',
 	integrations: [
 		starlight({
-			title: 'HyprwinV2 Docs',
-			description: 'Documentation for HyprwinV2 Lua scripting and custom shaders.',
-			favicon: '/hyprwin-docs/favicon.ico',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ThrowTop/hyprwinv2' }],
+			title: 'HyprWin Docs',
+			description: 'Documentation for HyprWin configuration, Lua scripting, and custom shaders.',
+			favicon: '/favicon.ico',
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ThrowTop/hyprwin' }],
 			editLink: {
 				baseUrl: 'https://github.com/ThrowTop/hyprwin-docs/edit/main/',
+			},
+			components: {
+				Footer: './src/components/Footer.astro',
 			},
 			sidebar: [
 				{
 					label: 'Getting Started',
 					items: [
-						{ label: 'Overview', slug: 'getting-started/overview' },
-						{ label: 'Installation', slug: 'getting-started/installation' },
+						{ label: 'Install and First Run', slug: 'getting-started' },
 						{ label: 'Configuration', slug: 'getting-started/configuration' },
 					],
 				},
 				{
 					label: 'Lua',
 					items: [
-						{ label: 'Overview', slug: 'lua/overview' },
-						{ label: 'API Reference', slug: 'lua/api-reference' },
-						{ label: 'Examples', slug: 'lua/examples' },
+						{ label: 'Globals and Standard Library', slug: 'lua/globals' },
+						{ label: 'hw', slug: 'lua/hw' },
+						{ label: 'hw.bind', slug: 'lua/bind' },
+						{ label: 'hw.settings', slug: 'lua/settings' },
+						{ label: 'hw.window', slug: 'lua/window' },
+						{ label: 'hw.mon', slug: 'lua/monitors' },
+						{ label: 'hw.input', slug: 'lua/input' },
+						{ label: 'hw.mouse', slug: 'lua/mouse' },
+						{ label: 'hw.fs', slug: 'lua/fs' },
+						{ label: 'hw.clipboard', slug: 'lua/clipboard' },
+						{ label: 'hw.audio', slug: 'lua/audio' },
+						{ label: 'hw.sys', slug: 'lua/sys' },
+						{ label: 'hw.debug', slug: 'lua/debug' },
+					],
+				},
+				{
+					label: 'Diagnostics',
+					items: [
+						{ label: 'Logging', slug: 'logging' },
+						{ label: 'Troubleshooting', slug: 'getting-started/troubleshooting' },
 					],
 				},
 				{
 					label: 'Shaders',
 					items: [
-						{ label: 'Custom Shader ABI', slug: 'shaders/custom-shader-abi' },
-						{ label: 'Uniforms', slug: 'shaders/uniforms' },
-						{ label: 'Examples', slug: 'shaders/examples' },
+						{ label: 'Overview and API', slug: 'shaders/custom' },
+						{ label: 'Shader API Reference', slug: 'shaders/api' },
+						{ label: 'Techniques', slug: 'shaders/techniques' },
+						{ label: 'Example Effects', slug: 'shaders/examples' },
+						{ label: 'Tools and Resources', slug: 'shaders/resources' },
 					],
 				},
 				{
-					label: 'Development',
+					label: 'Guides',
 					items: [
-						{ label: 'Building', slug: 'development/building' },
-						{ label: 'Documentation Plan', slug: 'development/documentation-plan' },
+						{ label: 'Recipes', slug: 'guides/recipes' },
 					],
 				},
 			],

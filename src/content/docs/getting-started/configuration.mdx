@@ -1,0 +1,105 @@
+---
+title: Configuration
+description: Understand configuration loading, reloading, errors, and multiple Lua files.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+HyprWin executes `hyprwin.lua` at startup.
+
+## Basic structure
+
+```lua title="hyprwin.lua"
+hw.settings = {
+  super = "LWIN",
+  border = 3,
+  colors = {
+    color.hex("00a2ff"),
+    color.hex("ff00f7"),
+  },
+  gradient_angle = 45,
+  rotating = true,
+  rotation_speed = 120,
+  resize_corner = "closest",
+}
+
+hw.bind("Q", function()
+  local window = hw.window.at_cursor()
+  if window and window:responsive() then
+    window:close()
+  end
+end)
+```
+
+## Loading and reloading
+
+Every load creates a new Lua state. Bindings, timers, callbacks, and Lua globals
+from the previous state are discarded. The complete configuration is then
+executed again.
+
+- Select **Reload Config** from the tray menu.
+- Call `hw.reload()` from a binding or timer.
+
+`hw.reload()` is ignored during initial configuration execution and inside
+reload or exit lifecycle callbacks. If SUPER is currently held, a requested
+reload is deferred until SUPER is released.
+
+See [`hw`](/hyprwin-docs/lua/hw/#lifecycle-callbacks) for reload and exit
+callbacks.
+
+## Configuration errors and safe mode
+
+A syntax error or uncaught runtime error during configuration execution enters
+safe mode:
+
+- Lua bindings are cleared.
+- Lua timers and callbacks are removed.
+- Default native settings are published.
+- Other HyprWin subsystems remain running.
+- The error is shown in a message box and written to the log.
+
+Fix `hyprwin.lua`, then select **Reload Config** to recover. Binding and timer
+errors are logged without entering safe mode.
+
+## Logs
+
+See [Logging](/hyprwin-docs/logging/) for log levels, files, and the live viewer.
+
+```lua title="hyprwin.lua"
+hw.open_log()
+hw.log("info", "log file: " .. hw.log_path())
+hw.log("info", "configuration loaded")
+```
+
+Logs are written under `logs/` beside the executable.
+
+## Multiple Lua files
+
+Resolve additional files relative to the active configuration:
+
+```lua title="hyprwin.lua"
+local config_path = hw.config_path()
+local config_dir = config_path:match("^(.*[\\/])") or ""
+
+dofile(config_dir .. "bindings.lua")
+dofile(config_dir .. "audio.lua")
+```
+
+Example layout:
+
+<FileTree>
+
+- HyprWin
+  - hyprwin.exe
+  - lua51.dll
+  - **hyprwin.lua** configuration entry point
+  - bindings.lua
+  - audio.lua
+
+</FileTree>
+
+## Editor support
+
+Place `.luarc.json` and `hw_annotations.lua` in the folder opened by your
+editor. The supplied `.luarc.json` configures Lua Language Server for LuaJIT and
+loads the HyprWin annotations as a workspace library.

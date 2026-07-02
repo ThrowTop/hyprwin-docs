@@ -1,0 +1,84 @@
+---
+title: Troubleshooting
+description: Diagnose startup, configuration, binding, and shader problems.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Start with the [HyprWin log](/hyprwin-docs/logging/). It records startup,
+configuration, binding, shader, and native subsystem failures.
+
+## HyprWin does not start
+
+- Confirm that `lua51.dll` is beside `hyprwin.exe`.
+- Accept the administrator elevation request.
+- Check whether another HyprWin instance is already running.
+
+## Configuration error message
+
+Open the newest file under `logs/`, fix the reported error, then select
+**Reload Config**. See [Configuration errors and safe
+mode](/hyprwin-docs/getting-started/configuration/#configuration-errors-and-safe-mode)
+for the recovery behavior.
+
+## A binding does not run
+
+<Steps>
+
+1. Hold the configured SUPER key while pressing the binding key.
+2. Do not include `SUPER` in the `hw.bind()` key string.
+3. Confirm the configuration reloaded successfully.
+4. Use `hw.binds()` to inspect the registered side-specific combinations.
+5. Check the log for callback errors or the 50 ms Lua watchdog.
+
+</Steps>
+
+Enable binding diagnostics:
+
+```lua title="hyprwin.lua"
+hw.settings.debug.trace_binds = true
+hw.settings.debug.bench_binds = true
+```
+
+`PAUSE` and `PRINTSCREEN` are understood by the parser but are not dispatched
+to bindings by the current low-level hook.
+
+## Mouse drag or resize ignores a window
+
+HyprWin rejects targets that are minimized, invisible, cloaked, child windows,
+tool windows, non-activating windows, unresponsive, or borderless fullscreen.
+Right-button resize also requires a resizable window.
+
+Enable selection logging:
+
+```lua title="hyprwin.lua"
+hw.settings.debug.trace_grabs = true
+```
+
+Review the logged rejection reason and `hw.settings.grab_filters`.
+
+## A custom shader is not active
+
+- `hw.settings.shader` resolves to the intended file.
+- `d3dcompiler_47.dll` is available beside HyprWin or from System32.
+- The shader includes `hyprwin_shader_api.hlsl`.
+- It implements `hyprwin_pixel`.
+- It returns premultiplied RGBA.
+- The log contains no compile warning or error.
+
+```lua title="hyprwin.lua"
+local status = hw.debug.shader_compiler_status()
+hw.log("info", status.diagnostics)
+```
+
+If only an included HLSL file changed, touch the main shader file or clear its
+cache files under `shader-cache/`.
+
+## Find the current files
+
+```lua title="hyprwin.lua"
+hw.log("info", "config: " .. hw.config_path())
+hw.log("info", "log: " .. hw.log_path())
+```
+
+Use `hw.open_config()` or `hw.open_log()` to open them directly.
