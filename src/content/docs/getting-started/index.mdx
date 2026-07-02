@@ -3,7 +3,7 @@ title: Get Started
 description: Install HyprWin and create your first Lua binding.
 ---
 
-import { CardGrid, FileTree, LinkCard, Steps } from '@astrojs/starlight/components';
+import { CardGrid, FileTree, LinkButton, LinkCard, Steps } from '@astrojs/starlight/components';
 
 HyprWin is a portable Windows 11 x64 application. Windows 10 may work but is
 untested and unsupported. HyprWin does not require an installer or a fixed
@@ -11,19 +11,31 @@ installation directory.
 
 ## Install
 
-Extract the release into a writable folder. The core runtime layout is:
+<LinkButton
+  href="https://github.com/ThrowTop/hyprwin/releases"
+  icon="download"
+>
+  Download from GitHub Releases
+</LinkButton>
+
+Download the current `windows-x64` ZIP and extract it into a writable folder.
+Release notes and older versions remain available on the same page. The core
+runtime layout is:
 
 <FileTree>
 
 - HyprWin
   - **hyprwin.exe** the application
   - **lua51.dll** the required LuaJIT runtime
+  - **d3dcompiler_47.dll** runtime custom-shader compiler
+  - shaders/
+    - **hyprwin_shader_api.hlsl** custom-shader contract
   - **hyprwin.lua** the active configuration
 
 </FileTree>
 
-If `hyprwin.lua` is missing, HyprWin creates it from the embedded default
-configuration during startup.
+`hyprwin.lua` is created from the embedded default configuration on first
+launch.
 
 Release archives may also contain `.luarc.json` and `hw_annotations.lua`.
 These provide Lua Language Server completion and type information and are not

@@ -11,6 +11,11 @@ export default defineConfig({
 			title: 'HyprWin Docs',
 			description: 'Documentation for HyprWin configuration, Lua scripting, and custom shaders.',
 			favicon: '/favicon.ico',
+			logo: {
+				src: './src/assets/hyprwin.svg',
+				alt: 'HyprWin',
+			},
+			lastUpdated: true,
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ThrowTop/hyprwin' }],
 			editLink: {
 				baseUrl: 'https://github.com/ThrowTop/hyprwin-docs/edit/main/',
@@ -22,6 +27,11 @@ export default defineConfig({
 				{
 					label: 'Getting Started',
 					items: [
+						{
+							label: 'Download',
+							slug: 'getting-started/download',
+							badge: { text: 'Releases', variant: 'success' },
+						},
 						{ label: 'Install and First Run', slug: 'getting-started' },
 						{ label: 'Configuration', slug: 'getting-started/configuration' },
 					],

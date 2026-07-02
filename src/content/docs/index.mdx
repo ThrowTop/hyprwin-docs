@@ -5,20 +5,43 @@ template: splash
 hero:
   tagline: Configure Windows keyboard and mouse actions with Lua.
   actions:
+    - text: Download
+      link: https://github.com/ThrowTop/hyprwin/releases
+      icon: download
     - text: Get Started
       link: /hyprwin-docs/getting-started/
       icon: right-arrow
-    - text: Lua API
-      link: /hyprwin-docs/lua/hw/
-      icon: open-book
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Badge, Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
 
 HyprWin is a portable Windows tray utility for keyboard-driven and
 mouse-assisted window management. Its behavior is configured in
 `hyprwin.lua`.
+
+<p>
+  <Badge text="Windows 11 x64" variant="note" />
+  {' '}
+  <Badge text="Portable" variant="success" />
+</p>
+
+<div>
+  <LinkButton
+    href="https://github.com/ThrowTop/hyprwin/releases"
+    icon="download"
+  >
+    Download from GitHub Releases
+  </LinkButton>
+  {' '}
+  <LinkButton
+    href="https://github.com/ThrowTop/hyprwin"
+    variant="secondary"
+    icon="github"
+  >
+    View source
+  </LinkButton>
+</div>
 
 :::note[Independent project]
 HyprWin is not affiliated with, endorsed by, or connected to
@@ -31,6 +54,10 @@ annotations.
 ## Start here
 
 <CardGrid>
+  <Card title="Download HyprWin" icon="download">
+    Get the current portable Windows release and its packaged shader API.
+    [View releases](https://github.com/ThrowTop/hyprwin/releases)
+  </Card>
   <Card title="Install and first run" icon="rocket">
     Set up the portable runtime folder and create your first binding.
     [Get started](/hyprwin-docs/getting-started/)

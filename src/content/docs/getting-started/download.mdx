@@ -1,0 +1,39 @@
+---
+title: Download
+description: Download the current HyprWin release from GitHub.
+---
+
+import { FileTree, LinkButton } from '@astrojs/starlight/components';
+
+HyprWin releases are published as portable Windows x64 ZIP archives. The
+Releases page always lists the current build and preserves previous versions
+with their release notes.
+
+<LinkButton
+  href="https://github.com/ThrowTop/hyprwin/releases"
+  icon="download"
+>
+  Open GitHub Releases
+</LinkButton>
+
+## Package contents
+
+Extract the current `windows-x64` archive into a writable folder:
+
+<FileTree>
+
+- HyprWin
+  - **hyprwin.exe** the application
+  - **lua51.dll** the required LuaJIT runtime
+  - **d3dcompiler_47.dll** runtime custom-shader compiler
+  - **.luarc.json** Lua Language Server configuration
+  - **hw_annotations.lua** HyprWin Lua API annotations
+  - shaders/
+    - **hyprwin_shader_api.hlsl** custom-shader contract
+
+</FileTree>
+
+No installer is required. Run `hyprwin.exe`; HyprWin creates `hyprwin.lua`
+beside the executable on first launch.
+
+Continue with [Install and First Run](/hyprwin-docs/getting-started/).
