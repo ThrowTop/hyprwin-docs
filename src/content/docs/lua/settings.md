@@ -22,7 +22,14 @@ hw.settings = {
   corner_radius = 8,
   outer_alpha = 0.5,
   glow_falloff = 0.15,
+  move_preview = "overlay",
+  resize_preview = "overlay",
+  live_preview_rate = 60,
   resize_corner = "closest",
+  debug = {
+    "trace_grabs",
+    "interaction",
+  },
 }
 ```
 
@@ -55,9 +62,12 @@ are published immediately.
 | `corner_radius` | `number` | `8` | Logical rounded corner radius, scaled by the grabbed window's DPI for the shader. |
 | `outer_alpha` | `number` | `0.5` | Built-in shader outer border-edge opacity and exterior glow strength. |
 | `glow_falloff` | `number` | `0.15` | Glow falloff supplied to the shader. |
+| `move_preview` | `"overlay"`, `"live"`, or `"thumbnail"` | `"overlay"` | Preview mode for SUPER plus left-button moving. |
+| `resize_preview` | `"overlay"`, `"live"`, or `"thumbnail"` | `"overlay"` | Preview mode for SUPER plus right-button resizing. |
+| `live_preview_rate` | `integer` | `60` | Maximum live placement submissions per second; `0` submits once per rendered frame. |
 | `resize_corner` | `string` | `"closest"` | Corner used for SUPER plus right-button resizing. |
 | `grab_filters` | `table[]` | empty | Ordered mouse target include and exclude rules. |
-| `debug` | proxy table | all disabled | Runtime diagnostics. |
+| `debug` | `string[]` | empty | Enabled runtime diagnostic categories. |
 
 Numeric settings must be finite numbers. The native settings boundary does not
 otherwise clamp these values.
@@ -67,8 +77,8 @@ individual assignments do not themselves raise a Lua error.
 
 ## Colors
 
-`colors` must be a dense array containing 1 through 16 `HW.Color` values. Sparse
-arrays, non-numeric keys, and values of another type are rejected.
+`colors` must be a list of 1 through 16 `HW.Color` values with no gaps.
+Non-numeric keys and values of another type are rejected.
 
 See [Globals and Standard Library](/hyprwin-docs/lua/globals/) for color constructors.
 
@@ -102,6 +112,37 @@ bottomright
 An invalid `super` string logs a warning and selects `LWIN`. A non-string value
 is rejected without changing the current value.
 
+## Move and resize previews
+
+`move_preview` and `resize_preview` independently select how HyprWin previews
+mouse interactions:
+
+- `"overlay"` moves only the border overlay, then queues one real-window
+  placement when the active mouse button or SUPER is released. This is the
+  default and does not create a placement worker.
+- `"live"` continuously moves the real window through a serialized,
+  latest-position-wins worker. `live_preview_rate` limits placement
+  submissions.
+- `"thumbnail"` begins as a responsive border-only overlay while Windows
+  Graphics Capture obtains one frozen frame. Once the thumbnail has been
+  presented, HyprWin parks the real window outside the virtual desktop until
+  the interaction commits.
+
+The selected modes and live rate are captured when an interaction starts.
+Changing them affects the next interaction. Releasing either SUPER or the
+active mouse button commits through the same path.
+
+For live mode, `live_preview_rate = 0` submits changed bounds once per rendered
+overlay frame. Positive fractional values are truncated, negative values clamp
+to zero, and values above `UINT32_MAX` clamp to `UINT32_MAX`.
+
+Thumbnail capture requests borderless-capture permission once per process.
+Permission waiting does not block border rendering. After capture starts, the
+first frame has a 100 ms deadline. Unsupported, denied, failed, or timed-out
+capture remains border-only and never parks the real window. During resize,
+the frozen image is linearly scaled and does not reflect application layout
+changes.
+
 ## Grab filters
 
 Grab filters control which windows can be selected by SUPER plus mouse drag.
@@ -129,37 +170,31 @@ HyprWin has built-in exclusions for the taskbar, secondary taskbar, desktop
 windows, and Start menu. User rules run afterward, so a later include rule can
 override a built-in exclusion.
 
-The rule table accepts only `action`, `process`, and `class`. The array must be
-dense and cannot contain other keys.
+The rule table accepts only `action`, `process`, and `class`. The list cannot
+have gaps or contain other keys.
 
 ## Debug settings
 
-| Field | Type | Description |
-| --- | --- | --- |
-| `trace_binds` | `boolean` | Log binding dispatch. |
-| `bench_binds` | `boolean` | Log binding execution time in microseconds. |
-| `trace_grabs` | `boolean` | Log mouse target selection decisions. |
-| `trace_super` | `boolean` | Log SUPER press and release dispatch. |
-| `trace_timeout` | `boolean` | Warn when guarded Lua calls approach their timeout. |
-| `last_config_load_ms` | `integer` | Last successful configuration load duration. Read-only. |
+Choose the diagnostic categories to enable:
 
 ```lua
-hw.settings.debug.trace_grabs = true
-```
-
-Assigning a complete `debug` table applies recognized fields. Unknown debug
-fields are logged. Directly assigning an unknown field on
-`hw.settings.debug` raises an error.
-
-Direct writes to a nested debug field update the Lua runtime's pending settings
-but do not publish a new cross-thread settings snapshot. This matters for
-`trace_grabs`, which is read by the mouse subsystem. To change that field after
-configuration loading, assign it through a debug table on the top-level proxy:
-
-```lua
-hw.settings.debug = {
-  trace_grabs = true,
+hw.settings = {
+  debug = {
+    "trace_grabs",
+    "interaction",
+    "snapshot",
+  },
 }
 ```
 
-Omitted debug fields retain their current values.
+| Category | Details |
+| --- | --- |
+| `trace_binds` | Binding dispatch. |
+| `bench_binds` | Binding execution time in microseconds. |
+| `trace_grabs` | Mouse target selection. |
+| `trace_super` | SUPER key dispatch. |
+| `trace_timeout` | Guarded Lua callbacks approaching their timeout. |
+| `overlay` | Overlay renderer recovery. |
+| `window_placement` | Placement worker, window parking, and commits. |
+| `interaction` | Drag and resize lifecycle. |
+| `snapshot` | Thumbnail capture. |

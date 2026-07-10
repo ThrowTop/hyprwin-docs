@@ -46,6 +46,7 @@ local title = window:title()
 | `class()` | `string` | Win32 window class name, or an empty string if unavailable. |
 | `pname()` | `string` | Process executable name, or an empty string if unavailable. |
 | `pid()` | `integer?` | Process ID, or `nil` if unavailable. |
+| `hwnd()` | `integer` | Native Win32 window handle. |
 | `visual_rect()` | `rect?` | Visible window bounds, or `nil` if unavailable. |
 | `set_visual_rect(bounds)` | `boolean` | Moves and resizes the visible frame to `bounds`. |
 | `get_maximized()` | `boolean` | Whether Windows marks the window as maximized. |
@@ -60,6 +61,13 @@ local title = window:title()
 | `responsive(timeout_ms?)` | `boolean` | Waits for the window to answer a no-op message. |
 | `focus()` | nothing | Restores, raises, and requests focus for the window. |
 | `dump()` | `table` | Returns the available window metadata in one table. |
+
+### Native handle
+
+`hwnd()` returns the native Win32 `HWND` as an integer. Like every
+`HW.Window` method, it validates that the underlying handle still belongs to
+the process recorded when the userdata was created; a stale window raises a
+`stale window` Lua error.
 
 ### Geometry
 

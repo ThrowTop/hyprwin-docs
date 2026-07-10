@@ -1,5 +1,5 @@
 ---
-title: Recipes
+title: Examples
 description: Small source-compatible HyprWin configuration patterns.
 ---
 

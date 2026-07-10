@@ -11,16 +11,9 @@ HyprWin executes `hyprwin.lua` at startup.
 
 ```lua title="hyprwin.lua"
 hw.settings = {
-  super = "LWIN",
   border = 3,
-  colors = {
-    color.hex("00a2ff"),
-    color.hex("ff00f7"),
-  },
-  gradient_angle = 45,
-  rotating = true,
-  rotation_speed = 120,
-  resize_corner = "closest",
+  move_preview = "overlay",
+  resize_preview = "overlay",
 }
 
 hw.bind("Q", function()
@@ -75,14 +68,12 @@ Logs are written under `logs/` beside the executable.
 
 ## Multiple Lua files
 
-Resolve additional files relative to the active configuration:
+The active configuration directory is added to Lua's module search path, so
+split configs can use normal `require` calls:
 
 ```lua title="hyprwin.lua"
-local config_path = hw.config_path()
-local config_dir = config_path:match("^(.*[\\/])") or ""
-
-dofile(config_dir .. "bindings.lua")
-dofile(config_dir .. "audio.lua")
+require("bindings")
+require("audio")
 ```
 
 Example layout:

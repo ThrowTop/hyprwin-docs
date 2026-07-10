@@ -151,6 +151,8 @@ Set `admin = true` to request elevation through Windows.
 
 `hw.config_path()` returns the normalized absolute configuration path.
 `hw.open_config()` reports whether an asynchronous open request started.
+The configuration directory is also prepended to `package.path`, so sibling
+Lua files can be loaded with `require`.
 
 ## Build information
 

@@ -3,6 +3,8 @@ title: Custom Shaders
 description: Understand the HyprWin shader pipeline and write a first HLSL pixel shader.
 ---
 
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
 HyprWin custom shaders control the pixels in the move and resize preview
 overlay. HyprWin supplies the target rectangle, settings.colors, settings, and timing;
 your HLSL function returns the color and opacity of each canvas pixel.
@@ -37,11 +39,12 @@ custom shaders in that directory so the include resolves both in HyprWin and
 in your HLSL language server.
 
 If HLSL is new to you, read [Techniques](/hyprwin-docs/shaders/techniques/)
-after completing the minimal shader. The [Tools and
-Resources](/hyprwin-docs/shaders/resources/) page links to the relevant
-Microsoft language and Shader Model 5 references.
+after completing the minimal shader.
 
 ## Minimal shader
+
+<Tabs>
+  <TabItem label="Custom shader">
 
 ```hlsl title="custom.hlsl"
 #include "hyprwin_shader_api.hlsl"
@@ -70,19 +73,94 @@ float4 hyprwin_pixel(HyprWinPixelInput input) {
 }
 ```
 
-The API header provides the `ps_main` entry point. A custom file must implement:
+  </TabItem>
+  <TabItem label="API header">
 
 ```hlsl title="hyprwin_shader_api.hlsl"
+#ifndef HYPRWIN_SHADER_API_HLSL
+#define HYPRWIN_SHADER_API_HLSL
+
+#define HYPRWIN_SHADER_ABI 2
+#define HYPRWIN_MAX_COLORS 16
+
+struct HyprWinRuntime {
+    float2 canvasSize;
+    float2 rectCenter;
+
+    float2 rectHalfSize;
+    float gradientScale;
+    uint sessionType;
+
+    float timeSeconds;
+    float deltaSeconds;
+    float sessionSeconds;
+};
+
+struct HyprWinSettings {
+    float2 gradientDirection;
+    float borderThickness;
+    float cornerRadius;
+
+    float outerAlpha;
+    float glowFalloff;
+    uint colorCount;
+
+    float4 colors[HYPRWIN_MAX_COLORS];
+};
+
+cbuffer HyprWinParams : register(b0) {
+    HyprWinRuntime runtime;
+    HyprWinSettings settings;
+};
+
+struct HyprWinPixelInput {
+    float2 screenPosition;
+};
+
+uint hyprwin_palette_count() {
+    return min(max(settings.colorCount, 1u), (uint)HYPRWIN_MAX_COLORS);
+}
+
+float4 hyprwin_palette_color(uint index) {
+    uint count = hyprwin_palette_count();
+    return settings.colors[min(index, count - 1u)];
+}
+
+float4 hyprwin_sample_palette(float t) {
+    uint count = hyprwin_palette_count();
+    float position = saturate(t) * (float)(count - 1u);
+    uint left = min((uint)position, count - 1u);
+    uint right = min(left + 1u, count - 1u);
+    return lerp(settings.colors[left], settings.colors[right], frac(position));
+}
+
 float4 hyprwin_pixel(HyprWinPixelInput input);
+
+float4 ps_main(float4 position : SV_Position) : SV_Target {
+    HyprWinPixelInput input;
+    input.screenPosition = position.xy;
+    return hyprwin_pixel(input);
+}
+
+#endif
 ```
 
-HyprWin compiles `ps_main` for shader model `ps_5_0`. Strict compilation and
-warnings-as-errors are enabled.
+  </TabItem>
+</Tabs>
+
+The API header tab contains the complete shader ABI 2 header shipped as
+`shaders/hyprwin_shader_api.hlsl`. Include the shipped file instead of copying
+it. The canonical source is
+[`src/shaders/hyprwin_shader_api.hlsl`](https://github.com/ThrowTop/hyprwin/blob/main/src/shaders/hyprwin_shader_api.hlsl).
+
+The API header provides the `ps_main` entry point. A custom file implements
+`hyprwin_pixel`. HyprWin compiles it for shader model `ps_5_0` with strict
+compilation and warnings-as-errors.
 
 The minimal example follows the built-in shader's positioning convention. The
-visible border overlaps the target rectangle by one physical pixel to prevent a
-sampling seam, then extends outward by the configured width. The rounded-box
-distance keeps the outline aligned with the DPI-scaled corner radius.
+visible border overlaps the target rectangle by one physical pixel. See
+[Border masks](/hyprwin-docs/shaders/techniques/#border-masks) for the detailed
+positioning rules.
 
 This convention is recommended, not required. A custom pixel shader receives
 the full virtual-desktop canvas and may draw inside the target rectangle or
@@ -121,21 +199,6 @@ float2 windowUv = windowPx / max(runtime.rectHalfSize, 1.0f);
 Do not assume `runtime.rectCenter` equals `runtime.canvasSize / 2`; the target can be anywhere
 on a multi-monitor virtual desktop.
 
-## Recommended border positioning
-
-`rounded_box_distance` returns zero at the target window's DWM visual bounds,
-negative values inside, and positive values outside. Use this adjusted distance
-for a conventional outline:
-
-```hlsl
-float borderDistance = d + 1.0f;
-```
-
-The one-pixel offset places the first border layer just inside the visual
-boundary. This avoids a transparent seam caused by pixel-center sampling while
-leaving the remaining border thickness outside the window. Start exterior glow
-after `borderDistance == settings.borderThickness`.
-
 ## Runtime values
 
 The `HyprWinParams` constant buffer is bound at `b0`.
@@ -167,8 +230,6 @@ These values come from the active Lua settings:
 
 The complete constant buffer is 336 bytes. Include the supplied API header
 instead of copying its layout so the HLSL and native layout remain aligned.
-The [Shader API Reference](/hyprwin-docs/shaders/api/) shows the exact structs
-and complete header shipped with the current release.
 
 `runtime.timeSeconds` is continuous while the overlay renderer exists and wraps after
 one hour. `runtime.sessionSeconds` resets when the operation changes between no
@@ -214,10 +275,4 @@ bytecode.
 ## Continue learning
 
 - [Techniques](/hyprwin-docs/shaders/techniques/) explains distance fields,
-  anti-aliasing, glow, animation, and performance.
-- [Shader API Reference](/hyprwin-docs/shaders/api/) contains the complete
-  `hyprwin_shader_api.hlsl` contract.
-- [Example Effects](/hyprwin-docs/shaders/examples/) maps common visual effects
-  to the techniques used to build them.
-- [Tools and Resources](/hyprwin-docs/shaders/resources/) collects authoritative
-  HLSL references and practical development tools.
+  anti-aliasing, glow, animation, performance, and useful HLSL references.

@@ -65,16 +65,13 @@ export default defineConfig({
 					label: 'Shaders',
 					items: [
 						{ label: 'Overview and API', slug: 'shaders/custom' },
-						{ label: 'Shader API Reference', slug: 'shaders/api' },
 						{ label: 'Techniques', slug: 'shaders/techniques' },
-						{ label: 'Example Effects', slug: 'shaders/examples' },
-						{ label: 'Tools and Resources', slug: 'shaders/resources' },
 					],
 				},
 				{
 					label: 'Guides',
 					items: [
-						{ label: 'Recipes', slug: 'guides/recipes' },
+						{ label: 'Examples', slug: 'guides/examples' },
 					],
 				},
 			],

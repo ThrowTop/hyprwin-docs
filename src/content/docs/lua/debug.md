@@ -3,15 +3,27 @@ title: hw.debug
 description: LuaJIT and shader compiler diagnostics.
 ---
 
-| Member | Returns | Description |
-| --- | --- | --- |
-| `jit_off()` | nothing | Disable LuaJIT compilation for the current Lua state. |
-| `shader_compiler_status()` | `table` | Report runtime shader compiler availability. |
+## LuaJIT control
 
-`jit_off()` affects the current Lua state. Reloading creates a new state with
-LuaJIT enabled.
+```lua
+hw.debug.jit(false)
+hw.debug.jit(true)
+```
 
-`shader_compiler_status()` returns:
+`hw.debug.jit(enabled)` enables or disables compilation for the current Lua
+state and returns nothing. The argument must be a boolean.
+
+JIT is enabled when a Lua state is created. Reloading the configuration creates
+a new state with JIT enabled.
+
+Disabling JIT makes the instruction-hook timeout more reliable for guarded Lua
+callbacks, because compiled loops may not check the hook promptly. The tradeoff
+is lower Lua execution performance. Enable it again with
+`hw.debug.jit(true)`.
+
+## Shader compiler diagnostics
+
+`hw.debug.shader_compiler_status()` returns:
 
 ```text
 {

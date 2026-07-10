@@ -6,6 +6,21 @@ description: Build borders, glow, gradients, animation, and procedural effects f
 This guide focuses on techniques that fit HyprWin's pixel-shader-only overlay.
 All examples assume `hyprwin_shader_api.hlsl` is included.
 
+## Useful links
+
+HyprWin compiles Direct3D 11 pixel shaders as `ps_5_0`.
+
+- [HLSL programming guide](https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-pguide)
+- [HLSL reference](https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-reference)
+- [Intrinsic functions](https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-intrinsic-functions)
+- [Shader semantics](https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics)
+- [Shader Model 5 reference](https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/d3d11-graphics-reference-sm5)
+- [SHADERed](https://shadered.org/), a shader editor with HLSL debugging and
+  profiling
+
+HyprWin's own compiler is the final compatibility check. Compilation results
+are recorded in the [HyprWin log](/hyprwin-docs/logging/).
+
 ## Rounded rectangle distance
 
 A signed-distance function returns a negative value inside a shape, zero on its
@@ -41,14 +56,11 @@ float borderMask = smoothstep(-aa, 0.0f, borderDistance) *
 ```
 
 `fwidth` is available in pixel shaders and measures how quickly a value changes
-across neighboring pixels. The one-pixel inward overlap prevents a sampling
-seam against the target window. Custom effects may ignore this convention and
+across neighboring pixels. The inward overlap prevents a sampling seam; the
+remaining band extends outward. Custom effects may ignore this convention and
 draw anywhere on `runtime.canvasSize`.
 
-The built-in shader offsets the visible border band one physical pixel into the
-target rectangle to avoid a sampling seam against the DWM visual boundary. The
-remaining band extends outward, and its opacity varies continuously through
-the configured thickness:
+The built-in border opacity varies continuously through its thickness:
 
 ```hlsl
 float opaqueWidth = min(width, 1.0f);
@@ -166,6 +178,3 @@ move and resize sessions. Multi-monitor desktops can make that canvas large.
 - Use `min`, `max`, and `saturate` to keep `sqrt`, division, logarithms, and
   powers in valid ranges.
 - Test on the largest multi-monitor layout you support, not only a small window.
-
-Continue with [Example Effects](/hyprwin-docs/shaders/examples/) or consult the
-[HLSL references](/hyprwin-docs/shaders/resources/).

@@ -36,8 +36,10 @@ for the recovery behavior.
 Enable binding diagnostics:
 
 ```lua title="hyprwin.lua"
-hw.settings.debug.trace_binds = true
-hw.settings.debug.bench_binds = true
+hw.settings.debug = {
+  "trace_binds",
+  "bench_binds",
+}
 ```
 
 `PAUSE` and `PRINTSCREEN` are understood by the parser but are not dispatched
@@ -52,10 +54,22 @@ Right-button resize also requires a resizable window.
 Enable selection logging:
 
 ```lua title="hyprwin.lua"
-hw.settings.debug.trace_grabs = true
+hw.settings.debug = { "trace_grabs" }
 ```
 
 Review the logged rejection reason and `hw.settings.grab_filters`.
+
+## Thumbnail preview remains border-only
+
+Thumbnail mode starts with the normal border overlay while Windows Graphics
+Capture requests permission and waits for its first frame. It remains
+border-only if capture is unsupported, permission is denied, capture fails, or
+no frame arrives within 100 ms after capture starts. In that fallback, HyprWin
+does not park the real window.
+
+Check the log for `window_snapshot` diagnostics. Permission is requested once
+per HyprWin process; restart HyprWin after changing the Windows capture
+permission.
 
 ## A custom shader is not active
 
@@ -73,12 +87,3 @@ hw.log("info", status.diagnostics)
 
 If only an included HLSL file changed, touch the main shader file or clear its
 cache files under `shader-cache/`.
-
-## Find the current files
-
-```lua title="hyprwin.lua"
-hw.log("info", "config: " .. hw.config_path())
-hw.log("info", "log: " .. hw.log_path())
-```
-
-Use `hw.open_config()` or `hw.open_log()` to open them directly.

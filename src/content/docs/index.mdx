@@ -16,9 +16,9 @@ hero:
 
 import { Badge, Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
 
-HyprWin is a portable Windows tray utility for keyboard-driven and
-mouse-assisted window management. Its behavior is configured in
-`hyprwin.lua`.
+HyprWin is a fast native Windows automation utility with a modal Windows-key
+workflow. It provides mouse-driven window moving and resizing, DirectX border
+previews, Lua keybinds, and an extensive Lua API for controlling Windows.
 
 <p>
   <Badge text="Windows 11 x64" variant="note" />
@@ -43,13 +43,7 @@ mouse-assisted window management. Its behavior is configured in
   </LinkButton>
 </div>
 
-:::note[Independent project]
-HyprWin is not affiliated with, endorsed by, or connected to
-[hyprwin.cloud](https://hyprwin.cloud/) or its developers.
-:::
-
-The documentation is derived from the current HyprWin source code and EmmyLua
-annotations.
+> Not related to [hyprwin.cloud](https://hyprwin.cloud/).
 
 ## Start here
 
@@ -70,7 +64,7 @@ annotations.
     Browse settings, windows, monitors, input, audio, filesystem, and system
     APIs. [`hw` API](/hyprwin-docs/lua/hw/)
   </Card>
-  <Card title="Custom shaders" icon="seti:shaderlab">
+  <Card title="Custom shaders" icon="puzzle">
     Build an HLSL pixel shader against the HyprWin overlay ABI.
     [Shader guide](/hyprwin-docs/shaders/custom/)
   </Card>

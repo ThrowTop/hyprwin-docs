@@ -19,20 +19,8 @@ installation directory.
 </LinkButton>
 
 Download the current `windows-x64` ZIP and extract it into a writable folder.
-Release notes and older versions remain available on the same page. The core
-runtime layout is:
-
-<FileTree>
-
-- HyprWin
-  - **hyprwin.exe** the application
-  - **lua51.dll** the required LuaJIT runtime
-  - **d3dcompiler_47.dll** runtime custom-shader compiler
-  - shaders/
-    - **hyprwin_shader_api.hlsl** custom-shader contract
-  - **hyprwin.lua** the active configuration
-
-</FileTree>
+See [Download](/hyprwin-docs/getting-started/download/) for the package
+contents. Release notes and older versions remain available on GitHub.
 
 `hyprwin.lua` is created from the embedded default configuration on first
 launch.
@@ -68,6 +56,10 @@ The configured SUPER key is `LWIN` by default.
 - Hold SUPER and press a configured key to run a Lua binding.
 - Hold SUPER and drag with the left mouse button to move a window.
 - Hold SUPER and drag with the right mouse button to resize a window.
+
+Move and resize interactions commit when either the active mouse button or
+SUPER is released. Their preview behavior can be selected independently; see
+[Move and resize previews](/hyprwin-docs/lua/settings/#move-and-resize-previews).
 
 ## Add a binding
 
@@ -127,8 +119,8 @@ HyprWin retains up to five current log files.
     description="Diagnose startup, configuration, binding, and shader problems."
   />
   <LinkCard
-    title="Recipes"
-    href="/hyprwin-docs/guides/recipes/"
+    title="Examples"
+    href="/hyprwin-docs/guides/examples/"
     description="Complete configuration patterns built from the documented API."
   />
 </CardGrid>
